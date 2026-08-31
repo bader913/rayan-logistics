@@ -1,0 +1,6 @@
+{
+  "name": "Rayan Logistics",
+  "description": "Enterprise Asset, Custody, Inventory and Logistics Management System with PostgreSQL migrations, audit trails, and role-based access control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
