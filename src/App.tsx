@@ -17,13 +17,14 @@ import { ImportPage } from './pages/ImportPage.js';
 import { AuditLogsPage } from './pages/AuditLogsPage.js';
 import { SystemDocsPage } from './pages/SystemDocsPage.js';
 import { LoginPage } from './pages/LoginPage.js';
+import { SystemResetPage } from './pages/SystemResetPage.js';
 
 const MainLayout: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   const { direction } = useLanguage();
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-3">
@@ -57,6 +58,14 @@ const MainLayout: React.FC = () => {
             {activeTab === 'import' && <ImportPage />}
             {activeTab === 'audit' && <AuditLogsPage />}
             {activeTab === 'docs' && <SystemDocsPage />}
+            {activeTab === 'settings' && (
+              <SystemResetPage
+                onComplete={() => {
+                  setActiveTab('dashboard');
+                  window.location.reload();
+                }}
+              />
+            )}
           </div>
         </main>
       </div>

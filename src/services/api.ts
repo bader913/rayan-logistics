@@ -45,6 +45,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
       window.dispatchEvent(new Event('auth:unauthorized'));
     }
     throw new ApiError(errorMsg, errorCode, data?.error?.details);
+  }  if (data.pagination) {
+    return {
+      data: data.data,
+      pagination: data.pagination,
+    } as T;
   }
 
   return data.data;
@@ -160,7 +165,15 @@ export const api = {
   getDepartments: () => request<any[]>('/locations/departments'),
   getCategories: () => request<any[]>('/locations/categories'),
   getDonors: () => request<any[]>('/locations/donors'),
-  getCostCenters: () => request<any[]>('/locations/cost-centers'),
+  getCostCenters: () => request<any[]>('/locations/cost-centers'),  // Administration
+  resetOperationalData: (data: {
+    confirmation: 'DELETE ALL DATA';
+    password: string;
+  }) =>
+    request<any>('/admin/reset-operational-data', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 
   // Import
   previewImport: (file: File) => {

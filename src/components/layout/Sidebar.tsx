@@ -9,6 +9,7 @@ import {
   FileSpreadsheet,
   History,
   FileCode,
+  Settings,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext.js';
 
@@ -20,7 +21,8 @@ export type NavTab =
   | 'maintenance'
   | 'import'
   | 'audit'
-  | 'docs';
+  | 'docs'
+  | 'settings';
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -39,6 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
     { id: 'import', label: t('nav.import'), icon: FileSpreadsheet },
     { id: 'audit', label: t('nav.audit'), icon: History },
     { id: 'docs', label: t('nav.docs'), icon: FileCode },
+    { id: 'settings', label: 'إدارة البيانات', icon: Settings },
   ];
 
   return (

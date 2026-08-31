@@ -8,6 +8,7 @@ import locationsRoutes from './locations.routes.js';
 import maintenanceRoutes from './maintenance.routes.js';
 import importRoutes from './import.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
+import adminRoutes from './admin.routes.js';
 import { checkDbConnection } from '../db/pool.js';
 
 const apiRouter = Router();
@@ -32,5 +33,6 @@ apiRouter.use('/locations', locationsRoutes);
 apiRouter.use('/maintenance', maintenanceRoutes);
 apiRouter.use('/import', importRoutes);
 apiRouter.use('/dashboard', dashboardRoutes);
+apiRouter.use('/admin', adminRoutes);
 
 export default apiRouter;
