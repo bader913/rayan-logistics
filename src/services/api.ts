@@ -56,6 +56,61 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 }
 
 export const api = {
+  // First-run setup
+  getSetupStatus: () =>
+    request<{
+      setupCompleted: boolean;
+      configurationExists: boolean;
+      installationInProgress: boolean;
+    }>('/setup/status'),
+
+  testSetupConnection: (database: {
+    host: string;
+    port: number;
+    database: string;
+    user: string;
+    password: string;
+    ssl: boolean;
+  }) =>
+    request<{
+      success: boolean;
+      serverVersion?: string;
+      databaseExists?: boolean;
+      message: string;
+    }>('/setup/test-connection', {
+      method: 'POST',
+      body: JSON.stringify(database),
+    }),
+
+  installSystem: (data: {
+    database: {
+      host: string;
+      port: number;
+      database: string;
+      user: string;
+      password: string;
+      ssl: boolean;
+    };
+    administrator: {
+      username: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+    };
+  }) =>
+    request<{
+      databaseCreated: boolean;
+      migrationsApplied: number;
+      migrationsSkipped: number;
+      administrator: {
+        id: string;
+        username: string;
+        email: string;
+      };
+    }>('/setup/install', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
   // Auth
   login: (credentials: { username: string; password: string }) =>
     request<{ token: string; user: any }>('/auth/login', {
