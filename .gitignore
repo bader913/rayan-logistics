@@ -22,3 +22,5 @@ coverage
 *.zip
 !public/*.zip
 
+
+data/
