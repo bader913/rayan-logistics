@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext.js';
 import { LanguageProvider, useLanguage } from './context/LanguageContext.js';
 import { Navbar } from './components/layout/Navbar.js';
@@ -18,6 +18,8 @@ import { AuditLogsPage } from './pages/AuditLogsPage.js';
 import { SystemDocsPage } from './pages/SystemDocsPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { SystemResetPage } from './pages/SystemResetPage.js';
+import { FirstRunSetupPage } from './pages/FirstRunSetupPage.js';
+import { api } from './services/api.js';
 
 const MainLayout: React.FC = () => {
   const { user, isLoading } = useAuth();
