@@ -3,6 +3,7 @@ import { Pool, PoolClient, QueryResult } from 'pg';
 import { ENV } from '../config/env.js';
 import { logger } from '../utils/logger.js';
 import { getMemoryDb } from './memory-store.js';
+import { readSetupConfig } from '../setup/setup-config.js';
 
 let pgPool: Pool | null = null;
 let isPostgresHealthy: boolean | null = null;
