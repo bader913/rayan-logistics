@@ -83,6 +83,70 @@ export async function testPostgresConnection(
   }
 }
 
+export interface DatabaseCreationResult {
+  created: boolean;
+  message: string;
+}
+
+export async function ensureDatabaseExists(
+  config: ServerDatabaseConfig
+): Promise<DatabaseCreationResult> {
+  const maintenanceDatabase =
+    config.database.toLowerCase() === 'postgres'
+      ? 'template1'
+      : 'postgres';
+
+  const client = new Client(
+    createClientConfig(
+      config,
+      maintenanceDatabase
+    )
+  );
+
+  try {
+    await client.connect();
+
+    const existingDatabase = await client.query<{
+      exists: boolean;
+    }>(
+      `SELECT EXISTS(
+         SELECT 1
+         FROM pg_database
+         WHERE datname = $1
+       ) AS exists`,
+      [config.database]
+    );
+
+    if (existingDatabase.rows[0]?.exists === true) {
+      return {
+        created: false,
+        message: 'قاعدة البيانات موجودة وجاهزة.',
+      };
+    }
+
+    const escapedDatabaseName =
+      config.database.replace(/"/g, '""');
+
+    await client.query(
+      `CREATE DATABASE "${escapedDatabaseName}"
+       WITH ENCODING 'UTF8'
+       TEMPLATE template0`
+    );
+
+    return {
+      created: true,
+      message: 'تم إنشاء قاعدة البيانات بنجاح.',
+    };
+  } catch (error: any) {
+    const friendlyError = getFriendlyConnectionError(
+      error
+    );
+
+    throw new Error(friendlyError);
+  } finally {
+    await client.end().catch(() => {});
+  }
+}
 function getFriendlyConnectionError(
   error: any
 ): string {
