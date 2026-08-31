@@ -9,6 +9,7 @@ import maintenanceRoutes from './maintenance.routes.js';
 import importRoutes from './import.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import adminRoutes from './admin.routes.js';
+import setupRoutes from './setup.routes.js';
 import { checkDbConnection } from '../db/pool.js';
 
 const apiRouter = Router();
@@ -25,6 +26,7 @@ apiRouter.get('/health', async (req, res) => {
   });
 });
 
+apiRouter.use('/setup', setupRoutes);
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/assets', assetsRoutes);
 apiRouter.use('/employees', employeesRoutes);
