@@ -10,33 +10,58 @@ let isPostgresHealthy: boolean | null = null;
 
 export function getPgPool(): Pool {
   if (!pgPool) {
-    const config = ENV.DATABASE_URL
+    const setupConfig = readSetupConfig();
+
+    const config = setupConfig?.setupCompleted
       ? {
-          connectionString: ENV.DATABASE_URL,
-          ssl: ENV.DB_SSL ? { rejectUnauthorized: false } : false,
+          host: setupConfig.database.host,
+          port: setupConfig.database.port,
+          database: setupConfig.database.database,
+          user: setupConfig.database.user,
+          password: setupConfig.database.password,
+          ssl: setupConfig.database.ssl
+            ? { rejectUnauthorized: false }
+            : false,
           max: ENV.DB_POOL_MAX,
-          idleTimeoutMillis: ENV.DB_POOL_IDLE_TIMEOUT_MS,
+          idleTimeoutMillis:
+            ENV.DB_POOL_IDLE_TIMEOUT_MS,
         }
-      : {
-          host: ENV.DB_HOST,
-          port: ENV.DB_PORT,
-          database: ENV.DB_NAME,
-          user: ENV.DB_USER,
-          password: ENV.DB_PASSWORD,
-          ssl: ENV.DB_SSL ? { rejectUnauthorized: false } : false,
-          max: ENV.DB_POOL_MAX,
-          idleTimeoutMillis: ENV.DB_POOL_IDLE_TIMEOUT_MS,
-        };
+      : ENV.DATABASE_URL
+        ? {
+            connectionString: ENV.DATABASE_URL,
+            ssl: ENV.DB_SSL
+              ? { rejectUnauthorized: false }
+              : false,
+            max: ENV.DB_POOL_MAX,
+            idleTimeoutMillis:
+              ENV.DB_POOL_IDLE_TIMEOUT_MS,
+          }
+        : {
+            host: ENV.DB_HOST,
+            port: ENV.DB_PORT,
+            database: ENV.DB_NAME,
+            user: ENV.DB_USER,
+            password: ENV.DB_PASSWORD,
+            ssl: ENV.DB_SSL
+              ? { rejectUnauthorized: false }
+              : false,
+            max: ENV.DB_POOL_MAX,
+            idleTimeoutMillis:
+              ENV.DB_POOL_IDLE_TIMEOUT_MS,
+          };
 
     pgPool = new Pool(config);
 
     pgPool.on('error', (err) => {
-      logger.error('Unexpected error on idle PostgreSQL client', err);
+      logger.error(
+        'Unexpected error on idle PostgreSQL client',
+        err
+      );
     });
   }
+
   return pgPool;
 }
-
 export async function reloadPgPool(): Promise<void> {
   const currentPool = pgPool;
 
