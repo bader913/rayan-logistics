@@ -37,6 +37,16 @@ export function getPgPool(): Pool {
   return pgPool;
 }
 
+export async function reloadPgPool(): Promise<void> {
+  const currentPool = pgPool;
+
+  pgPool = null;
+  isPostgresHealthy = null;
+
+  if (currentPool) {
+    await currentPool.end();
+  }
+}
 export interface DbResult<T = any> {
   rows: T[];
   rowCount: number;

@@ -13,6 +13,7 @@ import {
   createInitialAdministrator,
   InitialAdminInput,
 } from './setup-admin.js';
+import { reloadPgPool } from '../db/pool.js';
 
 export interface InstallSystemInput {
   database: ServerDatabaseConfig;
@@ -72,6 +73,8 @@ export async function installSystem(
       database: input.database,
       completedAt: new Date().toISOString(),
     });
+
+    await reloadPgPool();
 
     return {
       databaseCreated: databaseResult.created,
